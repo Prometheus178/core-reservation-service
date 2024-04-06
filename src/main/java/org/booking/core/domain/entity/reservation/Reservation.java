@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.booking.core.domain.entity.base.AbstractEntity;
-import org.booking.core.domain.entity.business.service.BusinessServiceEntity;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDateTime;
@@ -20,10 +19,6 @@ public class Reservation extends AbstractEntity {
 	public static final String ENTITY_NAME = "Reservation";
 
 	private String customerEmail;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "business_service_id")
-	private BusinessServiceEntity businessServiceEntity;
 
 	private String employeeEmail;
 

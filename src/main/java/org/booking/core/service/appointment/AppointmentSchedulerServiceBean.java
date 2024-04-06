@@ -4,16 +4,21 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.booking.core.actions.AppointmentAction;
+import org.booking.core.domain.entity.history.UserReservationHistory;
 import org.booking.core.domain.entity.reservation.Duration;
 import org.booking.core.domain.entity.reservation.Reservation;
+import org.booking.core.domain.entity.reservation.ReservationSchedule;
 import org.booking.core.domain.entity.reservation.TimeSlot;
-import org.booking.core.domain.entity.history.UserReservationHistory;
 import org.booking.core.domain.request.ReservationRequest;
+import org.booking.core.domain.response.BusinessHoursResponse;
+import org.booking.core.domain.response.BusinessResponse;
 import org.booking.core.domain.response.ReservationResponse;
 import org.booking.core.lock.RedisDistributedLock;
 import org.booking.core.mapper.ReservationMapper;
 import org.booking.core.repository.ReservationRepository;
 import org.booking.core.repository.ReservationScheduleRepository;
+import org.booking.core.service.BusinessService;
+import org.booking.core.service.BusinessServiceResponse;
 import org.booking.core.service.UserService;
 import org.booking.core.service.appointment.cache.CachingAppointmentSchedulerService;
 import org.booking.core.service.notification.ReservationNotificationManager;
@@ -38,9 +43,9 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 
 	public static final String RESERVED = "Reserved";
 	private final ReservationRepository reservationRepository;
-	private final BusinessServiceRepository businessServiceRepository;
+	private final BusinessService businessServiceRepository;
 	private final CachingAppointmentSchedulerService cachingAppointmentSchedulerService;
-	private final UserReservationHistoryRepository userReservationHistoryRepository;
+	private final UserReservationHistoryService userReservationHistoryRepository;
 	private final ReservationMapper reservationMapper;
 	private final ReservationScheduleRepository reservationScheduleRepository;
 	private final RedisDistributedLock redisDistributedLock;
@@ -49,7 +54,7 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 
 	@Override
 	public List<TimeSlot> findAvailableSlots(Long businessServiceId, LocalDate date) {
-		BusinessServiceEntity businessService = businessServiceRepository.findById(businessServiceId).orElseThrow(EntityNotFoundException::new);
+		BusinessServiceResponse businessService = businessServiceRepository.findById(businessServiceId);
 		List<TimeSlot> availableTimeSlotsByDay =
 				cachingAppointmentSchedulerService.findAvailableTimeSlotsByKey(KeyUtil.generateKey(date, businessServiceId));
 		if (availableTimeSlotsByDay.isEmpty()) {
@@ -85,7 +90,7 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 			if (locked) {
 				log.info("Locked: " + lockName);
 				existReservation.setCanceled(true);
-				updateTimeSlotsInCache(existReservation.getBusinessServiceEntity().getId(), existReservation.getDuration(),
+				updateTimeSlotsInCache(null, existReservation.getDuration(),
 						reservation.getDuration(),
 						reservation.getBookingTime().toLocalDate());
 				Reservation savedReservation = reserve(reservation);
@@ -127,7 +132,7 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 			if (locked) {
 				log.info("Locked: " + lockName);
 				String key = KeyUtil.generateKey(reservation.getBookingTime().toLocalDate(),
-						reservation.getBusinessServiceEntity().getId());
+						null);
 				cachingAppointmentSchedulerService.removeTimeSlotByKey(key, computeTimeSlot(reservation.getDuration()));
 				Reservation savedReservation = reservationRepository.save(reservation);
 				addReservationToBusinessSchedule(savedReservation);
@@ -147,18 +152,19 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 
 	private String getComputedLockName(Reservation reservation) {
 		return KeyUtil.generateKey(reservation.getBookingTime().toLocalDate(),
-				reservation.getBusinessServiceEntity().getId(), computeTimeSlot(reservation.getDuration()));
+				null, computeTimeSlot(reservation.getDuration()));
 	}
 
 	private void addReservationToBusinessSchedule(Reservation savedReservation) {
-		Business business = savedReservation.getBusinessServiceEntity().getBusiness();
+//		BusinessResponse business = savedReservation.getBusinessServiceEntity().getBusiness();
+		BusinessResponse business = null;
 		Optional<ReservationSchedule> reservationScheduleByBusinessId = reservationScheduleRepository.findByBusinessId(business.getId());
 		if (reservationScheduleByBusinessId.isPresent()) {
 			ReservationSchedule reservationSchedule = reservationScheduleByBusinessId.get();
 			reservationSchedule.addReservation(savedReservation);
 		} else {
 			ReservationSchedule reservationSchedule = new ReservationSchedule();
-			reservationSchedule.setBusiness(business);
+//			reservationSchedule.setBusiness(business);
 			reservationSchedule.addReservation(savedReservation);
 			reservationScheduleRepository.save(reservationSchedule);
 		}
@@ -178,8 +184,7 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 
 	private void saveToUserHistory(Reservation savedReservation, String userEmail) {
 		UserReservationHistory userReservationHistory =
-				userReservationHistoryRepository.findByUserEmail(userEmail)
-						.orElse(new UserReservationHistory());
+				userReservationHistoryRepository.findByUserEmail(userEmail) ;
 		userReservationHistory.addReservation(savedReservation);
 		userReservationHistory.setUserEmail(userEmail);
 		userReservationHistoryRepository.save(userReservationHistory);
@@ -191,15 +196,16 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 		return new TimeSlot(startTime.toLocalTime(), endTime.toLocalTime());
 	}
 
-	private List<TimeSlot> computeTimeSlots(BusinessServiceEntity businessServiceEntity) {
+	private List<TimeSlot> computeTimeSlots(BusinessServiceResponse businessServiceEntity) {
 		int duration = businessServiceEntity.getDuration();
-		Business business = businessServiceEntity.getBusiness();
-		BusinessHours businessHours = business.getBusinessHours();
+		BusinessResponse business = businessServiceEntity.getBusiness();
+		BusinessHoursResponse businessHours = business.getBusinessHours();
 		List<TimeSlot> availableTimeSlots = new ArrayList<>();
 
-		LocalTime openTime = businessHours.getOpenTime();
-		LocalTime closeTime = businessHours.getCloseTime();
-
+//		LocalTime openTime = businessHours.getOpenTime();
+//		LocalTime closeTime = businessHours.getCloseTime();
+		LocalTime openTime = null;
+		LocalTime closeTime = null;
 		while (openTime.plusMinutes(duration).isBefore(closeTime.plusMinutes(1))) {
 			LocalTime slotStart = openTime;
 			LocalTime slotEnd = openTime.plusMinutes(duration);
