@@ -102,6 +102,9 @@ dependencies {
     //Validator
     implementation 'commons-validator:commons-validator:1.8.0'
 
+    //OkHttp
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+
     //Test
     testImplementation('io.rest-assured:rest-assured:5.4.0') {
         exclude group: 'org.apache.groovy', module: 'groovy'
