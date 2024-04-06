@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  booking-core-appointment-service-db:
+    container_name: 'booking-core-appointment-service-db'
+    image: 'postgres:12'
+    restart: always
+    ports:
+      - 5432:5432
+    networks:
+      - booking-core
+    environment:
+      POSTGRES_DB: core_db
+      POSTGRES_USER: core_user
+      POSTGRES_PASSWORD: core
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  booking-core-appointment-service:
+    container_name: 'booking-core-appointment-service'
+    build: .
+    ports:
+      - 8080:8080
+      - 5005:5005
+    networks:
+      - booking-core
+    environment:
+      _JAVA_OPTIONS: >
+        -Xdebug
+        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      DATABASE_URL: postgresql://booking-core_db:5432/core_db
+      DATABASE_USERNAME: core_user
+      DATABASE_PASSWORD: core
+    depends_on:
+      - booking-core_db
+volumes:
+  postgres-data:
+networks:
+  booking-core:
+    name: booking-core
+    driver: bridge
