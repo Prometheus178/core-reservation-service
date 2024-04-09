@@ -1,7 +1,7 @@
 package org.booking.core.mapper;
 
 import org.booking.core.domain.entity.reservation.Duration;
-import org.booking.core.domain.request.DurationRequest;
+import org.booking.core.request.DurationRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

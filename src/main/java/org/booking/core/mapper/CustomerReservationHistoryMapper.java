@@ -2,8 +2,8 @@ package org.booking.core.mapper;
 
 import org.booking.core.domain.entity.history.UserReservationHistory;
 import org.booking.core.domain.entity.reservation.Reservation;
-import org.booking.core.domain.request.ReservationRequest;
-import org.booking.core.domain.request.UserReservationHistoryRequest;
+import org.booking.core.request.ReservationRequest;
+import org.booking.core.request.UserReservationHistoryRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

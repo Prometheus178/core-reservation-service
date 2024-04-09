@@ -1,18 +1,18 @@
 package org.booking.core.service.request;
 
-import okhttp3.*;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 @Service
-public class OkHttpRequestApi {
+public class OkHttpRequestService {
 	private final OkHttpClient client = new OkHttpClient();
 
-	public String putRequest(String apiUrl, String requestBody) throws IOException {
-		RequestBody body = RequestBody.create(requestBody, MediaType.parse("application/json"));
-		Request request = new Request.Builder().url(apiUrl).put(body).build();
-
+	public String getRequest(String url) throws IOException {
+		Request request = new Request.Builder().url(url).get().build();
 		try (Response response = client.newCall(request).execute()) {
 			if (response.isSuccessful()) {
 				return response.body().string();

@@ -124,8 +124,8 @@ dependencyManagement {
 }
 
 if (!project.hasProperty("runList")) {
-    project.ext.runList = "main"
-    //project.ext.runList = "diffChangeLog"
+   project.ext.runList = "main"
+//    project.ext.runList = "diffChangeLog"
 }
 
 project.ext.diffChangelogFile = "src/main/resources/db/changelog/" + new Date().format("yyyyMMddHHmmss") + "_changelog.yml"

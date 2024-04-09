@@ -1,8 +1,8 @@
 package org.booking.core.service.appointment;
 
 import org.booking.core.domain.entity.reservation.TimeSlot;
-import org.booking.core.domain.request.ReservationRequest;
-import org.booking.core.domain.response.ReservationResponse;
+import org.booking.core.request.ReservationRequest;
+import org.booking.core.response.ReservationResponse;
 
 import java.time.LocalDate;
 import java.util.List;

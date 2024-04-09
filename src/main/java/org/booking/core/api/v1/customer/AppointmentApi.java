@@ -3,8 +3,8 @@ package org.booking.core.api.v1.customer;
 
 import lombok.RequiredArgsConstructor;
 import org.booking.core.domain.entity.reservation.TimeSlot;
-import org.booking.core.domain.request.ReservationRequest;
-import org.booking.core.domain.response.ReservationResponse;
+import org.booking.core.request.ReservationRequest;
+import org.booking.core.response.ReservationResponse;
 import org.booking.core.service.appointment.AppointmentSchedulerService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

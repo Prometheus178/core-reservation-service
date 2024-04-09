@@ -6,7 +6,7 @@ services:
     image: 'postgres:12'
     restart: always
     ports:
-      - 5432:5432
+      - 25432:5432
     networks:
       - booking-core
     environment:
@@ -19,21 +19,21 @@ services:
     container_name: 'booking-core-appointment-service'
     build: .
     ports:
-      - 8080:8080
-      - 5005:5005
+      - 8082:8082
+      - 5002:5002
     networks:
       - booking-core
     environment:
       _JAVA_OPTIONS: >
         -Xdebug
-        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-      DATABASE_URL: postgresql://booking-core_db:5432/core_db
+        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5002
+      DATABASE_URL: postgresql://booking-core-appointment-service-db:5432/core_db
       DATABASE_USERNAME: core_user
       DATABASE_PASSWORD: core
     depends_on:
-      - booking-core_db
-  booking-core_redis:
-    container_name: 'booking-core_redis'
+      - booking-core-appointment-service-db
+  booking-core-redis:
+    container_name: 'booking-core-redis'
     image: redis:7-alpine
     ports:
       - "6379:6379"

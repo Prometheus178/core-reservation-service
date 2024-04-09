@@ -4,9 +4,9 @@ ENV HOME /home
 WORKDIR /home/app
 RUN mkdir /home/jenkins
 
-ARG JAR_FILE=booking-core-v2-2.0.jar
+ARG JAR_FILE=booking-core-appointment-service-2.1.jar
 ARG JAR_FILE_SOURCE=build/libs/${JAR_FILE}
 
 COPY ${JAR_FILE_SOURCE}  ${JAR_FILE}
 
-ENTRYPOINT ["java","-jar","booking-core-v2-2.1.jar"]
+ENTRYPOINT ["java","-jar","booking-core-appointment-service-2.1.jar"]

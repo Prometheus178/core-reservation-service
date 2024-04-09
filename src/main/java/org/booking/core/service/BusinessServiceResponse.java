@@ -2,7 +2,7 @@ package org.booking.core.service;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.booking.core.domain.response.BusinessResponse;
+import org.booking.core.response.BusinessResponse;
 
 import java.math.BigDecimal;
 

@@ -2,9 +2,9 @@ package org.booking.core.service.notification;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.booking.core.domain.dto.notification.DefaultNotificationDto;
-import org.booking.core.domain.dto.notification.MetaInfoDto;
 import org.booking.core.domain.entity.reservation.Reservation;
+import org.booking.core.notification.dto.DefaultNotificationDto;
+import org.booking.core.notification.dto.MetaInfoDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

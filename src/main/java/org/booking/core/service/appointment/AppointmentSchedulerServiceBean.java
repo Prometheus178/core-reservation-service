@@ -9,14 +9,14 @@ import org.booking.core.domain.entity.reservation.Duration;
 import org.booking.core.domain.entity.reservation.Reservation;
 import org.booking.core.domain.entity.reservation.ReservationSchedule;
 import org.booking.core.domain.entity.reservation.TimeSlot;
-import org.booking.core.domain.request.ReservationRequest;
-import org.booking.core.domain.response.BusinessHoursResponse;
-import org.booking.core.domain.response.BusinessResponse;
-import org.booking.core.domain.response.ReservationResponse;
 import org.booking.core.lock.RedisDistributedLock;
 import org.booking.core.mapper.ReservationMapper;
 import org.booking.core.repository.ReservationRepository;
 import org.booking.core.repository.ReservationScheduleRepository;
+import org.booking.core.request.ReservationRequest;
+import org.booking.core.response.BusinessHoursResponse;
+import org.booking.core.response.BusinessResponse;
+import org.booking.core.response.ReservationResponse;
 import org.booking.core.service.BusinessService;
 import org.booking.core.service.BusinessServiceResponse;
 import org.booking.core.service.UserService;
@@ -158,7 +158,8 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 	private void addReservationToBusinessSchedule(Reservation savedReservation) {
 //		BusinessResponse business = savedReservation.getBusinessServiceEntity().getBusiness();
 		BusinessResponse business = null;
-		Optional<ReservationSchedule> reservationScheduleByBusinessId = reservationScheduleRepository.findByBusinessId(business.getId());
+		Optional<ReservationSchedule> reservationScheduleByBusinessId =null;
+//				 reservationScheduleRepository.findByBusinessId(business.getId());
 		if (reservationScheduleByBusinessId.isPresent()) {
 			ReservationSchedule reservationSchedule = reservationScheduleByBusinessId.get();
 			reservationSchedule.addReservation(savedReservation);

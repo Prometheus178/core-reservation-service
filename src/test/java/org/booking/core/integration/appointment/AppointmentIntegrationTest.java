@@ -6,8 +6,10 @@ import io.restassured.response.Response;
 import org.booking.core.AuthenticationResponse;
 import org.booking.core.BaseRegisterRequest;
 import org.booking.core.domain.entity.reservation.TimeSlot;
-import org.booking.core.domain.request.*;
 import org.booking.core.integration.AbstractIntegrationTest;
+import org.booking.core.request.*;
+import org.booking.core.response.BusinessResponse;
+import org.booking.core.service.BusinessServiceResponse;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
@@ -153,7 +155,7 @@ public class AppointmentIntegrationTest extends AbstractIntegrationTest {
 		assertThat(response.statusCode())
 				.isEqualTo(HttpStatus.OK.value());
 		BusinessServiceResponse businessServiceResponse = response.body().as(BusinessServiceResponse.class);
-		createdBusinessServiceId = businessServiceResponse.getId();
+//		createdBusinessServiceId = businessServiceResponse.getId();
 
 		assertThat(response.jsonPath().getString("name")).isEqualTo(businessServiceRequest.getName());
 		assertThat(response.jsonPath().getDouble("price")).isEqualTo(businessServiceRequest.getPrice(),
@@ -228,8 +230,8 @@ public class AppointmentIntegrationTest extends AbstractIntegrationTest {
 		reservationRequest.setBusinessServiceId(createdBusinessServiceId);
 
 		TimeSlot timeSlot = timeSlots.get(i);
-		LocalTime startTime = timeSlot.getStartTime();
-		LocalTime endTime = timeSlot.getEndTime();
+		LocalTime startTime = timeSlot.startTime();
+		LocalTime endTime = timeSlot.endTime();
 		LocalDate currentDay = LocalDate.now();
 		LocalDateTime reservedTime = LocalDateTime.of(currentDay.getYear(), currentDay.getMonth(), currentDay.getDayOfMonth(),
 				startTime.getHour(), startTime.getMinute());

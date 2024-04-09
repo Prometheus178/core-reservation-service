@@ -1,4 +1,4 @@
-package org.booking.core.domain.dto.notification;
+package org.booking.core.notification.dto;
 
 import lombok.Builder;
 import lombok.Getter;
