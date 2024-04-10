@@ -1,4 +1,4 @@
-package org.booking.core;
+package org.booking.core.integration.request;
 
 public class AuthenticationRequest {
 
