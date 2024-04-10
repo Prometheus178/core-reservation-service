@@ -17,11 +17,11 @@ import org.booking.core.request.ReservationRequest;
 import org.booking.core.response.BusinessHoursResponse;
 import org.booking.core.response.BusinessResponse;
 import org.booking.core.response.ReservationResponse;
-import org.booking.core.service.BusinessService;
 import org.booking.core.service.BusinessServiceResponse;
 import org.booking.core.service.UserService;
 import org.booking.core.service.appointment.cache.CachingAppointmentSchedulerService;
 import org.booking.core.service.notification.ReservationNotificationManager;
+import org.booking.core.service.outer.OuterBusinessService;
 import org.booking.core.util.KeyUtil;
 import org.redisson.api.RLock;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,6 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 
 	public static final String RESERVED = "Reserved";
 	private final ReservationRepository reservationRepository;
-	private final BusinessService businessServiceRepository;
 	private final CachingAppointmentSchedulerService cachingAppointmentSchedulerService;
 	private final UserReservationHistoryService userReservationHistoryRepository;
 	private final ReservationMapper reservationMapper;
@@ -51,10 +50,11 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 	private final RedisDistributedLock redisDistributedLock;
 	private final UserService userService;
 	private final ReservationNotificationManager reservationNotificationManager;
+	private final OuterBusinessService outerBusinessService;
 
 	@Override
 	public List<TimeSlot> findAvailableSlots(Long businessServiceId, LocalDate date) {
-		BusinessServiceResponse businessService = businessServiceRepository.findById(businessServiceId);
+		BusinessServiceResponse businessService = outerBusinessService.getBusinessServiceResponse(businessServiceId);
 		List<TimeSlot> availableTimeSlotsByDay =
 				cachingAppointmentSchedulerService.findAvailableTimeSlotsByKey(KeyUtil.generateKey(date, businessServiceId));
 		if (availableTimeSlotsByDay.isEmpty()) {
@@ -156,16 +156,15 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 	}
 
 	private void addReservationToBusinessSchedule(Reservation savedReservation) {
-//		BusinessResponse business = savedReservation.getBusinessServiceEntity().getBusiness();
-		BusinessResponse business = null;
-		Optional<ReservationSchedule> reservationScheduleByBusinessId =null;
-//				 reservationScheduleRepository.findByBusinessId(business.getId());
+		Long businessId = savedReservation.getBusinessId();
+		Optional<ReservationSchedule> reservationScheduleByBusinessId =
+				reservationScheduleRepository.findById(businessId);
 		if (reservationScheduleByBusinessId.isPresent()) {
 			ReservationSchedule reservationSchedule = reservationScheduleByBusinessId.get();
 			reservationSchedule.addReservation(savedReservation);
 		} else {
 			ReservationSchedule reservationSchedule = new ReservationSchedule();
-//			reservationSchedule.setBusiness(business);
+			reservationSchedule.setBusinessId(businessId);
 			reservationSchedule.addReservation(savedReservation);
 			reservationScheduleRepository.save(reservationSchedule);
 		}
@@ -197,16 +196,15 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 		return new TimeSlot(startTime.toLocalTime(), endTime.toLocalTime());
 	}
 
-	private List<TimeSlot> computeTimeSlots(BusinessServiceResponse businessServiceEntity) {
-		int duration = businessServiceEntity.getDuration();
-		BusinessResponse business = businessServiceEntity.getBusiness();
+	private List<TimeSlot> computeTimeSlots(BusinessServiceResponse businessServiceResponse) {
+		int duration = businessServiceResponse.getDuration();
+		BusinessResponse business = businessServiceResponse.getBusiness();
 		BusinessHoursResponse businessHours = business.getBusinessHours();
 		List<TimeSlot> availableTimeSlots = new ArrayList<>();
 
-//		LocalTime openTime = businessHours.getOpenTime();
-//		LocalTime closeTime = businessHours.getCloseTime();
-		LocalTime openTime = null;
-		LocalTime closeTime = null;
+		LocalTime openTime = LocalTime.parse(businessHours.getOpenTime());
+		LocalTime closeTime = LocalTime.parse(businessHours.getCloseTime());
+
 		while (openTime.plusMinutes(duration).isBefore(closeTime.plusMinutes(1))) {
 			LocalTime slotStart = openTime;
 			LocalTime slotEnd = openTime.plusMinutes(duration);

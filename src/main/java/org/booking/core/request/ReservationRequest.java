@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class ReservationRequest {
 
+	private Long businessId;
 	private Long businessServiceId;
 	private String employeeEmail;
 	private String bookingTime;

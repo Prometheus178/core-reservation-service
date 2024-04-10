@@ -17,6 +17,8 @@ public class ReservationSchedule extends AbstractEntity {
 	public static final String ENTITY_NAME = "ReservationSchedule";
 	public static final String TABLE_NAME = "reservation_schedule";
 
+	private Long businessId;
+
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "reservation_schedule_reservations",
 			joinColumns = {@JoinColumn(name = "reservation_schedule_reservation_id")},

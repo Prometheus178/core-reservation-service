@@ -2,7 +2,7 @@ package org.booking.core.mapper;
 
 
 import org.booking.core.domain.entity.reservation.ReservationSchedule;
-import org.booking.core.request.ReservationScheduleRequest;
+import org.booking.core.response.ReservationResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -11,7 +11,7 @@ public interface ReservationScheduleMapper {
 
 	ReservationScheduleMapper INSTANCE = Mappers.getMapper(ReservationScheduleMapper.class);
 
-	ReservationSchedule toEntity(ReservationScheduleRequest dto);
+	ReservationResponse toResponse(ReservationSchedule entity);
 
 
 }

@@ -22,6 +22,10 @@ public class Reservation extends AbstractEntity {
 
 	private String employeeEmail;
 
+	private Long businessId;
+
+	private Long businessServiceId;
+
 	private LocalDateTime bookingTime;
 
 	@Embedded

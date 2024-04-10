@@ -1,0 +1,32 @@
+databaseChangeLog:
+- changeSet:
+    id: 1712726129406-1
+    author: sergey (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: business_id
+            type: bigint
+        tableName: reservation_schedule
+- changeSet:
+    id: 1712726129406-2
+    author: sergey (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: business_id
+            type: bigint
+        tableName: reservations
+- changeSet:
+    id: 1712726129406-3
+    author: sergey (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: business_service_id
+            type: bigint
+        tableName: reservations
+

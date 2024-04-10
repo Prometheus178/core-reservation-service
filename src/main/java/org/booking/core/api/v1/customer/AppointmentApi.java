@@ -15,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/api/v1/customers/appointments", produces = MediaType.APPLICATION_JSON_VALUE, consumes =
+@RequestMapping(path = "/api/v1/appointments", produces = MediaType.APPLICATION_JSON_VALUE, consumes =
 		MediaType.APPLICATION_JSON_VALUE)
 public class AppointmentApi {
 

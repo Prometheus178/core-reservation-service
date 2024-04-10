@@ -1,13 +1,13 @@
-package org.booking.core.request;
+package org.booking.core.response;
 
 import lombok.Data;
 
 import java.util.Set;
 
 @Data
-public class UserReservationHistoryRequest {
+public class UserReservationHistoryResponse {
 	private Long id;
-	private Set<ReservationRequest> reservations;
+	private Set<ReservationResponse> reservations;
 	private Long customerId;
 	private String eventType;
 	private String eventTime;
