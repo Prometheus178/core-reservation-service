@@ -9,7 +9,7 @@ import org.booking.core.integration.AbstractIntegrationTest;
 import org.booking.core.integration.response.AuthenticationResponse;
 import org.booking.core.request.*;
 import org.booking.core.response.BusinessResponse;
-import org.booking.core.service.BusinessServiceResponse;
+import org.booking.core.response.BusinessServiceResponse;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
@@ -31,7 +31,7 @@ public class AppointmentIntegrationTest extends AbstractIntegrationTest {
 
 	public static final String API_BUSINESSES = "/api/v1/managements/businesses/";
 
-	public static final String API_APPOINTMENTS = "/api/v1/customers/appointments";
+	public static final String API_APPOINTMENTS = "/api/v1/appointments";
 	public static String customerToken;
 	public static String managerToken;
 	public static Long createdBusinessServiceId;
@@ -155,7 +155,7 @@ public class AppointmentIntegrationTest extends AbstractIntegrationTest {
 		assertThat(response.statusCode())
 				.isEqualTo(HttpStatus.OK.value());
 		BusinessServiceResponse businessServiceResponse = response.body().as(BusinessServiceResponse.class);
-//		createdBusinessServiceId = businessServiceResponse.getId();
+		createdBusinessServiceId = businessServiceResponse.getId();
 
 		assertThat(response.jsonPath().getString("name")).isEqualTo(businessServiceRequest.getName());
 		assertThat(response.jsonPath().getDouble("price")).isEqualTo(businessServiceRequest.getPrice(),

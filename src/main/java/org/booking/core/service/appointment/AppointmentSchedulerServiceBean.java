@@ -13,11 +13,12 @@ import org.booking.core.lock.RedisDistributedLock;
 import org.booking.core.mapper.ReservationMapper;
 import org.booking.core.repository.ReservationRepository;
 import org.booking.core.repository.ReservationScheduleRepository;
+import org.booking.core.repository.UserReservationHistoryService;
 import org.booking.core.request.ReservationRequest;
 import org.booking.core.response.BusinessHoursResponse;
 import org.booking.core.response.BusinessResponse;
+import org.booking.core.response.BusinessServiceResponse;
 import org.booking.core.response.ReservationResponse;
-import org.booking.core.service.BusinessServiceResponse;
 import org.booking.core.service.UserService;
 import org.booking.core.service.appointment.cache.CachingAppointmentSchedulerService;
 import org.booking.core.service.notification.ReservationNotificationManager;
@@ -90,7 +91,7 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 			if (locked) {
 				log.info("Locked: " + lockName);
 				existReservation.setCanceled(true);
-				updateTimeSlotsInCache(null, existReservation.getDuration(),
+				updateTimeSlotsInCache(reservation.getBusinessId(), existReservation.getDuration(),
 						reservation.getDuration(),
 						reservation.getBookingTime().toLocalDate());
 				Reservation savedReservation = reserve(reservation);

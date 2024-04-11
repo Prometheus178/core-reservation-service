@@ -1,7 +1,7 @@
 package org.booking.core.service.outer;
 
 import lombok.RequiredArgsConstructor;
-import org.booking.core.service.BusinessServiceResponse;
+import org.booking.core.response.BusinessServiceResponse;
 import org.booking.core.service.request.OkHttpRequestService;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,6 @@
 package org.booking.core.response;
 
 import lombok.Data;
-import org.booking.core.service.BusinessServiceResponse;
 
 import java.util.Set;
 
@@ -14,6 +13,7 @@ public class BusinessResponse {
 	private String description;
 	private BusinessHoursResponse businessHours;
 	private Set<BusinessServiceResponse> businessServices;
+	private ReservationScheduleResponse reservationSchedule;
 	private Set<String> employees;
 
 }
