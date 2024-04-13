@@ -1,0 +1,208 @@
+databaseChangeLog:
+- changeSet:
+    id: 1712638912245-1
+    author: sergey (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: reservation_schedulePK
+            name: id
+            type: BIGINT
+        - column:
+            name: created_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            constraints:
+              nullable: false
+            name: deleted
+            type: BOOLEAN
+        - column:
+            name: modified_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        tableName: reservation_schedule
+- changeSet:
+    id: 1712638912245-2
+    author: sergey (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: reservation_schedule_reservationsPK
+            name: reservation_schedule_reservation_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: reservation_schedule_reservationsPK
+            name: reservation_id
+            type: BIGINT
+        tableName: reservation_schedule_reservations
+- changeSet:
+    id: 1712638912245-3
+    author: sergey (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: reservationsPK
+            name: id
+            type: BIGINT
+        - column:
+            name: created_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            constraints:
+              nullable: false
+            name: deleted
+            type: BOOLEAN
+        - column:
+            name: modified_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: booking_time
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            constraints:
+              nullable: false
+            name: canceled
+            type: BOOLEAN
+        - column:
+            name: customer_email
+            type: VARCHAR(255)
+        - column:
+            name: end_time
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: start_time
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: employee_email
+            type: VARCHAR(255)
+        - column:
+            name: state
+            type: VARCHAR(255)
+        tableName: reservations
+- changeSet:
+    id: 1712638912245-4
+    author: sergey (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: user_reservation_historyPK
+            name: id
+            type: BIGINT
+        - column:
+            name: created_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            constraints:
+              nullable: false
+            name: deleted
+            type: BOOLEAN
+        - column:
+            name: modified_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: user_email
+            type: VARCHAR(255)
+        tableName: user_reservation_history
+- changeSet:
+    id: 1712638912245-5
+    author: sergey (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: user_reservation_history_reservationsPK
+            name: user_reservation_history_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: user_reservation_history_reservationsPK
+            name: reservation_id
+            type: BIGINT
+        tableName: user_reservation_history_reservations
+- changeSet:
+    id: 1712638912245-6
+    author: sergey (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: reservation_id
+        constraintName: UC_RESERVATION_SCHEDULE_RESERVATIONSRESERVATION_ID_COL
+        tableName: reservation_schedule_reservations
+- changeSet:
+    id: 1712638912245-7
+    author: sergey (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: reservation_id
+        baseTableName: reservation_schedule_reservations
+        constraintName: FK4ops04ioasn7bqr33niy39dsd
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: reservations
+        validate: true
+- changeSet:
+    id: 1712638912245-8
+    author: sergey (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: reservation_schedule_reservation_id
+        baseTableName: reservation_schedule_reservations
+        constraintName: FKjpqpbyl8ni9dm3ja87bwrkevb
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: reservation_schedule
+        validate: true
+- changeSet:
+    id: 1712638912245-9
+    author: sergey (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_reservation_history_id
+        baseTableName: user_reservation_history_reservations
+        constraintName: FKlpkxpu84haafl70ugoukc2x71
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: user_reservation_history
+        validate: true
+- changeSet:
+    id: 1712638912245-10
+    author: sergey (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: reservation_id
+        baseTableName: user_reservation_history_reservations
+        constraintName: FKlt585aelaqjtgsld95x23ce2e
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: reservations
+        validate: true
+
