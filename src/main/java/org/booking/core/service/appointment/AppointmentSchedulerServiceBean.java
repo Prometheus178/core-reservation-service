@@ -91,7 +91,8 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 			if (locked) {
 				log.info("Locked: " + lockName);
 				existReservation.setCanceled(true);
-				updateTimeSlotsInCache(reservation.getBusinessId(), existReservation.getDuration(),
+				log.info(String.format("Reservation id=%s canceled" , existReservation.getId()) );
+				updateTimeSlotsInCache(reservation.getBusinessServiceId(), existReservation.getDuration(),
 						reservation.getDuration(),
 						reservation.getBookingTime().toLocalDate());
 				Reservation savedReservation = reserve(reservation);
@@ -125,7 +126,7 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 		reservation.setCustomerEmail(currentUserEmail);
 
 		String lockName = getComputedLockName(reservation);
-		log.info("Created " + lockName);
+		log.info("Created lockName " + lockName);
 		RLock lock = redisDistributedLock.getLock(lockName);
 		try {
 			log.info("Try to get lock: " + lockName);
@@ -133,7 +134,7 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 			if (locked) {
 				log.info("Locked: " + lockName);
 				String key = KeyUtil.generateKey(reservation.getBookingTime().toLocalDate(),
-						null);
+						reservation.getBusinessServiceId());
 				cachingAppointmentSchedulerService.removeTimeSlotByKey(key, computeTimeSlot(reservation.getDuration()));
 				Reservation savedReservation = reservationRepository.save(reservation);
 				addReservationToBusinessSchedule(savedReservation);
@@ -153,7 +154,7 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 
 	private String getComputedLockName(Reservation reservation) {
 		return KeyUtil.generateKey(reservation.getBookingTime().toLocalDate(),
-				null, computeTimeSlot(reservation.getDuration()));
+				reservation.getBusinessServiceId(), computeTimeSlot(reservation.getDuration()));
 	}
 
 	private void addReservationToBusinessSchedule(Reservation savedReservation) {
@@ -185,7 +186,7 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 
 	private void saveToUserHistory(Reservation savedReservation, String userEmail) {
 		UserReservationHistory userReservationHistory =
-				userReservationHistoryRepository.findByUserEmail(userEmail) ;
+				userReservationHistoryRepository.findByUserEmail(userEmail).orElseGet(UserReservationHistory::new);
 		userReservationHistory.addReservation(savedReservation);
 		userReservationHistory.setUserEmail(userEmail);
 		userReservationHistoryRepository.save(userReservationHistory);

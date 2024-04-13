@@ -228,6 +228,7 @@ public class AppointmentIntegrationTest extends AbstractIntegrationTest {
 		ReservationRequest reservationRequest = new ReservationRequest();
 		reservationRequest.setEmployeeEmail(createEmployeeEmail);
 		reservationRequest.setBusinessServiceId(createdBusinessServiceId);
+		reservationRequest.setBusinessId(createdBusinessId);
 
 		TimeSlot timeSlot = timeSlots.get(i);
 		LocalTime startTime = timeSlot.startTime();
