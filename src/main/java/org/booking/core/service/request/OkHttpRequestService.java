@@ -14,7 +14,7 @@ import java.io.IOException;
 @Log
 public class OkHttpRequestService {
 
-	public static final String HTTP_BOOKING_CORE_APP_8080 = "http://localhost:8080";
+	public static final String HTTP_BOOKING_CORE_APP_8080 = "http://booking-core-app:8080";
 	private final OkHttpClient client = new OkHttpClient();
 	private final Gson gson = new Gson();
 
@@ -28,7 +28,9 @@ public class OkHttpRequestService {
 			if (response.isSuccessful()) {
 				ResponseBody body = response.body();
 				if (body != null) {
-					return gson.fromJson(body.string(), tClass);
+					String json = body.string();
+					log.info(json);
+					return gson.fromJson(json, tClass);
 				}
 			} else {
 				log.warning("Unexpected response: " + response.code());
