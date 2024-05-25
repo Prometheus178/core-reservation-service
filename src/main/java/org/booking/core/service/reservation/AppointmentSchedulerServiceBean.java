@@ -1,4 +1,4 @@
-package org.booking.core.service.appointment;
+package org.booking.core.service.reservation;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +20,9 @@ import org.booking.core.response.BusinessResponse;
 import org.booking.core.response.BusinessServiceResponse;
 import org.booking.core.response.ReservationResponse;
 import org.booking.core.service.UserService;
-import org.booking.core.service.appointment.cache.CachingAppointmentSchedulerService;
 import org.booking.core.service.notification.ReservationNotificationManager;
 import org.booking.core.service.outer.OuterBusinessService;
+import org.booking.core.service.reservation.cache.CachingAppointmentSchedulerService;
 import org.booking.core.util.KeyUtil;
 import org.redisson.api.RLock;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static org.booking.core.config.kafka.KafkaTopicConfig.BOOKING_CORE_TOPIC;
+import static org.booking.core.config.kafka.KafkaTopicConfig.NOTIFICATION_IN_0;
 
 @RequiredArgsConstructor
 @Log
@@ -56,8 +56,14 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 	@Override
 	public List<TimeSlot> findAvailableSlots(Long businessServiceId, LocalDate date) {
 		BusinessServiceResponse businessService = outerBusinessService.getBusinessServiceResponse(businessServiceId);
+		long start = System.currentTimeMillis();
+		log.info("findAvailableTimeSlotsByKey");
+		log.info("start" + start);
 		List<TimeSlot> availableTimeSlotsByDay =
 				cachingAppointmentSchedulerService.findAvailableTimeSlotsByKey(KeyUtil.generateKey(date, businessServiceId));
+		long end = System.currentTimeMillis();
+		log.info("end " + end);
+		log.info("result: " + (end - start));
 		if (availableTimeSlotsByDay.isEmpty()) {
 			List<TimeSlot> availableTimeSlots = computeTimeSlots(businessService);
 			log.info("Try to save computed time slots");
@@ -73,8 +79,14 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 	@Override
 	public ReservationResponse reserve(ReservationRequest reservationRequest) {
 		Reservation reservation = reservationMapper.toEntity(reservationRequest);
+		long start = System.currentTimeMillis();
+		log.info("locking");
+		log.info("start" + start);
 		Reservation savedReservation = reserve(reservation);
-		reservationNotificationManager.sendNotification(BOOKING_CORE_TOPIC,
+		long end = System.currentTimeMillis();
+		log.info("end " + end);
+		log.info("result: " + (end - start));
+		reservationNotificationManager.sendNotification(NOTIFICATION_IN_0,
 				AppointmentAction.CREATED_RESERVATION.getValue(), savedReservation);
 		return reservationMapper.toResponse(savedReservation);
 	}
@@ -96,7 +108,7 @@ public class AppointmentSchedulerServiceBean implements AppointmentSchedulerServ
 						reservation.getDuration(),
 						reservation.getBookingTime().toLocalDate());
 				Reservation savedReservation = reserve(reservation);
-				reservationNotificationManager.sendNotification(BOOKING_CORE_TOPIC,
+				reservationNotificationManager.sendNotification(NOTIFICATION_IN_0,
 						AppointmentAction.MODIFIED_RESERVATION.getValue(), savedReservation);
 				return reservationMapper.toResponse(savedReservation);
 			} else {

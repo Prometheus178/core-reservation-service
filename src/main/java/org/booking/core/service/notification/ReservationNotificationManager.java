@@ -3,8 +3,8 @@ package org.booking.core.service.notification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.booking.core.domain.entity.reservation.Reservation;
-import org.booking.core.notification.dto.DefaultNotificationDto;
-import org.booking.core.notification.dto.MetaInfoDto;
+import org.booking.core.notification.dto.Notification;
+import org.booking.core.notification.dto.NotificationChannel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,21 +16,21 @@ import static org.booking.core.actions.NotificationType.EMAIL;
 @Service
 public class ReservationNotificationManager implements NotificationManager<Reservation> {
 
-	private final NotificationService notificationService;
-	private final NotificationDataProvider<Reservation, DefaultNotificationDto> dataProvider;
+	private final KafkaProducerService kafkaProducerService;
+	private final NotificationDataProvider<Reservation, Notification> dataProvider;
 
 	@Override
 	public void sendNotification(String receiver, String action, Reservation obj) {
-		DefaultNotificationDto message = dataProvider.generateMessage(action, obj);
-		message.setMetaInfo(getMetaInfoDto());
-		notificationService.sent(receiver, toJson(message));
+		Notification message = dataProvider.generateMessage(action, obj);
+		message.setNotificationChannel(getMetaInfoDto());
+		kafkaProducerService.sent(receiver, toJson(message));
 	}
 
-	private MetaInfoDto getMetaInfoDto() {
-		MetaInfoDto metaInfoDto = new MetaInfoDto();
-		metaInfoDto.setSender("booking-core");
-		metaInfoDto.setReceiver("booking-core-notification-service");
-		metaInfoDto.setNotifyBy(List.of(EMAIL));
-		return metaInfoDto;
+	private NotificationChannel getMetaInfoDto() {
+		NotificationChannel notificationChannel = new NotificationChannel();
+		notificationChannel.setSender("booking-core");
+		notificationChannel.setReceiver("booking-core-notification-service");
+		notificationChannel.setNotifyBy(List.of(EMAIL));
+		return notificationChannel;
 	}
 }

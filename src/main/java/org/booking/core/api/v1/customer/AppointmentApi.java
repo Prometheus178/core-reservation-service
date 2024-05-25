@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.booking.core.domain.entity.reservation.TimeSlot;
 import org.booking.core.request.ReservationRequest;
 import org.booking.core.response.ReservationResponse;
-import org.booking.core.service.appointment.AppointmentSchedulerService;
+import org.booking.core.service.reservation.AppointmentSchedulerService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

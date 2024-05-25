@@ -1,4 +1,4 @@
-package org.booking.core.service.appointment.cache;
+package org.booking.core.service.reservation.cache;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;

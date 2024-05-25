@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Log
 @RequiredArgsConstructor
 @Service
-public class NotificationServiceBean implements NotificationService {
+public class KafkaProducerServiceBean implements KafkaProducerService {
 
 	private final KafkaTemplate<String, String> kafkaTemplate;
 
