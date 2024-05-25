@@ -19,7 +19,7 @@ plugins {
 }
 
 group = 'org.booking.core'
-version = '2.1'
+version = '3.0'
 sourceCompatibility = '17'
 
 
@@ -124,7 +124,7 @@ dependencyManagement {
 }
 
 if (!project.hasProperty("runList")) {
-   project.ext.runList = "main"
+    project.ext.runList = "main"
 //    project.ext.runList = "diffChangeLog"
 }
 
