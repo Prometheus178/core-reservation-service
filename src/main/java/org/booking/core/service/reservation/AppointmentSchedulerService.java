@@ -1,4 +1,4 @@
-package org.booking.core.service.appointment;
+package org.booking.core.service.reservation;
 
 import org.booking.core.domain.entity.reservation.TimeSlot;
 import org.booking.core.request.ReservationRequest;

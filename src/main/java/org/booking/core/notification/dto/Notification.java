@@ -10,11 +10,11 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-public class DefaultNotificationDto implements Serializable {
+public class Notification implements Serializable {
 
 	String uuid;
-	MetaInfoDto metaInfo;
-	List<ContactDto> contacts;
+	NotificationChannel notificationChannel;
+	List<Contact> contacts;
 	String action;
 
 }

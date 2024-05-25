@@ -8,10 +8,10 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
 
-	public static final String BOOKING_CORE_TOPIC = "booking-core-topic";
+	public static final String NOTIFICATION_IN_0 = "notification-in-0";
 
 	@Bean
 	public NewTopic bookingCoreTopic(){
-		return TopicBuilder.name(BOOKING_CORE_TOPIC).build();
+		return TopicBuilder.name(NOTIFICATION_IN_0).build();
 	}
 }
